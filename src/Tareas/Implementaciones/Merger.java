@@ -6,6 +6,7 @@ package Tareas.Implementaciones;
 
 import Puertos.Slot;
 import java.util.ArrayList;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -15,31 +16,67 @@ import java.util.ArrayList;
  */
 public class Merger
 {
-    private ArrayList<Slot> slotEntradas;
+    private ArrayList<Slot> listaSlotsEntrada;
     private Slot slotSalida;
     
-    public Merger(ArrayList<Slot> slotEntradas, Slot slotSalida)
+    public Merger(ArrayList<Slot> listaSlotsEntrada, Slot slotSalida)
     {
-        for(Slot s: slotEntradas)
+        for(Slot s: listaSlotsEntrada)
         {
-            this.slotEntradas.add(s);
+            this.listaSlotsEntrada.add(s);
         }
         
         this.slotSalida=slotSalida;
     }
     
+    public ArrayList<Slot> getSlotEntradas()
+    {
+        return this.listaSlotsEntrada;
+    }
+
+    public Slot getSlotSalida()
+    {
+        return this.slotSalida;
+    }
+
+    public void setSlotSalida(Slot slotSalida)
+    {
+        this.slotSalida = slotSalida;
+    }
+    
+    /**
+     * Ejecuta la tarea de Merger
+     * Lee los mensajes de todos los Slots de entrada y los envía al Slot de salida
+     * El objetivo es fusionar los mensajes en una misma secuencia de Salida
+     */
     public void ejecutar() throws Exception
     {
-        // Obtenemos el numero de mensajes que quieren escribir en cada Slot de Entrada
-        for(Slot s: this.slotEntradas)
+        if (this.listaSlotsEntrada == null || this.listaSlotsEntrada.isEmpty())
         {
-            int numMsjEntrada=s.getQueue().size();
-            
-            for(int i=0; i<numMsjEntrada; i++)
+            throw new Exception("NO hay ningun Slot de Entrada definido en la tarea Merger");
+        }
+        if (this.slotSalida == null)
+        {
+            throw new Exception("NO hay ningun Slot de Salida definido en la tarea Merger");
+        }
+
+        // Recorremos cada Slot de Entrada
+        for (Slot s : this.listaSlotsEntrada)
+        {
+            // Obtenemos el numero de mensajes que quieren escribir en cada Slot de Entrada
+            int numMensajes = s.getQueue().size();
+
+            for (int i = 0; i < numMensajes; i++)
             {
-                this.slotSalida.escribir(s.leer());
+                Document mensaje = s.leer();
+                if (mensaje != null)
+                {
+                    this.slotSalida.escribir(mensaje);
+                }
             }
         }
     }
+
+    
     
 }
