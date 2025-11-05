@@ -4,19 +4,19 @@
  */
 package Tareas.Implementaciones;
 
-import Puertos.Slot;
-import java.util.ArrayList;
-
 /**
  *
  * @author agustinrodriguez
  */
-public abstract class Tarea {
+public class Splitter extends Tarea {
+
+    public Splitter() {
+        
+    }
     
-    private ArrayList<Slot> inputs;
-    private ArrayList<Slot> outputs;
-    private TipoTarea tipo;
-    
-    public abstract void run();
+    @Override
+    public void run() {
+
+    }
     
 }
