@@ -4,19 +4,46 @@
  */
 package Tareas.Implementaciones;
 
+import Puertos.Slot;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
 /**
  *
  * @author agustinrodriguez
  */
 public class Splitter extends Tarea {
 
-    public Splitter() {
-        
-    }
+    private Slot entrada;
+    private Slot salida;
+    private NodeList nodos;
     
+    public Splitter(Slot entrada, Slot salida) {
+        this.entrada = entrada;
+        this.salida = salida;
+    }
+
+    public Slot getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(Slot entrada) {
+        this.entrada = entrada;
+    }
+
+    public Slot getSalida() {
+        return salida;
+    }
+
+    public void setSalida(Slot salida) {
+        this.salida = salida;
+    }
+
     @Override
-    public void run() {
+    public void ejecutar() {
 
     }
+        
+    
     
 }

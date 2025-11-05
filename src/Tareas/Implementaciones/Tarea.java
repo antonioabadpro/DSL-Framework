@@ -13,10 +13,36 @@ import java.util.ArrayList;
  */
 public abstract class Tarea {
     
-    private ArrayList<Slot> inputs;
-    private ArrayList<Slot> outputs;
+    private ArrayList<Slot> entradas;
+    private ArrayList<Slot> salidas;
     private TipoTarea tipo;
     
-    public abstract void run();
+    public abstract void ejecutar();
+
+    public ArrayList<Slot> getEntradas() {
+        return entradas;
+    }
+
+    public void setEntradas(ArrayList<Slot> entradas) {
+        this.entradas = entradas;
+    }
+
+    public ArrayList<Slot> getSalidas() {
+        return salidas;
+    }
+
+    public void setSalidas(ArrayList<Slot> salidas) {
+        this.salidas = salidas;
+    }
+
+    public TipoTarea getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoTarea tipo) {
+        this.tipo = tipo;
+    }
+
+
     
 }
