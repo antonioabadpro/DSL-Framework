@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
  * Entradas = n
  * Salidas = 1
  */
-public class Merger
+public class Merger extends Tarea
 {
     private ArrayList<Slot> listaSlotsEntrada;
     private Slot slotSalida;

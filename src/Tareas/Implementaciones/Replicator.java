@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
  * Entradas = 1
  * Salidas = n
  */
-public class Replicator
+public class Replicator extends Tarea
 {
     private ArrayList<Slot> listaSlotsSalida;
     private Slot slotEntrada;
