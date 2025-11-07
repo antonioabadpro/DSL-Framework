@@ -41,8 +41,5 @@ public abstract class Tarea {
 
     public void setTipo(TipoTarea tipo) {
         this.tipo = tipo;
-    }
-
-
-    
+    }    
 }

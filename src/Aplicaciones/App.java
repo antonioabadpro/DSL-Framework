@@ -4,10 +4,6 @@
  */
 package Aplicaciones;
 
-/**
- *
- * @author agustinrodriguez
- */
 public class App {
     
 }
