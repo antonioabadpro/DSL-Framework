@@ -5,6 +5,8 @@
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import static Tareas.Implementaciones.TipoTarea.TRANSFORMADORAS;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -48,15 +50,12 @@ import org.w3c.dom.NodeList;
  */
 public class Splitter extends Tarea{
 
-    private Slot entrada;
-    private Slot salida;
     private String groupTag;   // Ej: "drinks", "productos", "items"
     private String elementTag; // Ej: "drink", "producto", "item"
     private String idTag;      // Ej: "order_id", "pedido_id"
 
-    public Splitter(Slot entrada, Slot salida, String groupTag, String elementTag, String idTag) {
-        this.entrada = entrada;
-        this.salida = salida;
+    public Splitter(ArrayList<Slot> entrada, ArrayList<Slot> salida, String groupTag, String elementTag, String idTag) {
+        super(entrada, salida, TRANSFORMADORAS);
         this.groupTag = groupTag;
         this.elementTag = elementTag;
         this.idTag = idTag;
@@ -68,6 +67,8 @@ public class Splitter extends Tarea{
             // Crear parser de documentos XML
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
+            Slot entrada = getEntradas().getFirst();
+            Slot salida = getSalidas().getFirst();
             
             // Leer documento de entrada desde el slot
             Document doc = entrada.leer();
@@ -136,23 +137,7 @@ public class Splitter extends Tarea{
     }
     
     // ----- Getters y Setters -----
-    
-    public Slot getEntrada() {
-        return entrada;
-    }
-
-    public Slot getSalida() {
-        return salida;
-    }
-
-    public void setEntrada(Slot entrada) {
-        this.entrada = entrada;
-    }
-
-    public void setSalida(Slot salida) {
-        this.salida = salida;
-    }
-
+   
     public void setGroupTag(String groupTag) {
         this.groupTag = groupTag;
     }
