@@ -7,23 +7,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class ContextEnricher extends Tarea {
-
-    private Slot entrada;
+  
     private Slot contexto;
-    private Slot salida;
 
-    public ContextEnricher(Slot entrada, Slot contexto, Slot salida) {
-        this.entrada = entrada;
+    public ContextEnricher(ArrayList<Slot> entrada, Slot contexto, ArrayList<Slot> salida) {
+        super(entrada, salida, TipoTarea.MODIFICADORAS);
         this.contexto = contexto;
-        this.salida = salida;
-    }
-
-    public Slot getEntrada() {
-        return entrada;
-    }
-
-    public void setEntrada(Slot entrada) {
-        this.entrada = entrada;
     }
 
     public Slot getContexto() {
@@ -32,14 +21,6 @@ public class ContextEnricher extends Tarea {
 
     public void setContexto(Slot contexto) {
         this.contexto = contexto;
-    }
-
-    public Slot getSalida() {
-        return salida;
-    }
-
-    public void setSalida(Slot salida) {
-        this.salida = salida;
     }
 
     @Override
@@ -63,11 +44,11 @@ public class ContextEnricher extends Tarea {
             System.out.println("Excepcion al leer contexto: " + e.getMessage());
         }
 
-        while (!this.entrada.getQueue().isEmpty()) {
+        while (!this.getEntradas().get(0).getQueue().isEmpty()) {
             Document docMensaje = null;
 
             try {
-                docMensaje = this.entrada.leer();
+                docMensaje = this.getEntradas().get(0).leer();
                 if (docMensaje != null) {
                     
                     //enriquecer
@@ -75,7 +56,7 @@ public class ContextEnricher extends Tarea {
                     Node nodoImportado = docMensaje.importNode(elementoContexto, true);
                     elementoMensaje.appendChild(nodoImportado);
 
-                    this.salida.escribir(docMensaje);
+                    this.getSalidas().get(0).escribir(docMensaje);
                 }
 
             } catch (Exception e) {
