@@ -17,8 +17,10 @@ public abstract class Tarea
     private ArrayList<Slot> slotSalidas;
     private TipoTarea tipo;
 
-    public Tarea(TipoTarea tipo)
+    public Tarea(ArrayList<Slot> slotEntradas, ArrayList<Slot> slotSalidas, TipoTarea tipo)
     {
+        this.slotEntradas = slotEntradas;
+        this.slotSalidas = slotSalidas;
         this.tipo = tipo;
     }
     
