@@ -5,6 +5,7 @@
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import static Tareas.Implementaciones.TipoTarea.ENRUTADORAS;
 import java.util.ArrayList;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -24,18 +25,14 @@ import org.w3c.dom.NodeList;
  */
 public class Correlator extends Tarea {
 
-    private ArrayList<Slot> entradas; // Slots de entrada dinámicos
-    private ArrayList<Slot> salidas;  // Slots de salida dinámicos
     private String tagClave;          // Etiqueta XML usada para correlacionar
 
     public Correlator() {
-        this.entradas = new ArrayList<>();
-        this.salidas = new ArrayList<>();
+        super(new ArrayList<>(), new ArrayList<>(), ENRUTADORAS);
     }
 
     public Correlator(ArrayList<Slot> entradas, ArrayList<Slot> salidas, String tagClave) {
-        this.entradas = entradas;
-        this.salidas = salidas;
+        super(entradas, salidas, ENRUTADORAS);
         this.tagClave = tagClave;
     }
 
@@ -43,6 +40,8 @@ public class Correlator extends Tarea {
     public void ejecutar() {
         try {
             XPath xPath = XPathFactory.newInstance().newXPath();
+            ArrayList<Slot> entradas = getEntradas();
+            ArrayList<Slot> salidas = getSalidas();
 
             // Leer todos los documentos de todas las entradas
             ArrayList<Document> documentos = new ArrayList<>();
@@ -101,26 +100,6 @@ public class Correlator extends Tarea {
     }
 
     // ----- Getters y Setters -----
-
-    @Override
-    public ArrayList<Slot> getEntradas() {
-        return entradas;
-    }
-
-    @Override
-    public void setEntradas(ArrayList<Slot> entradas) {
-        this.entradas = entradas;
-    }
-
-    @Override
-    public ArrayList<Slot> getSalidas() {
-        return salidas;
-    }
-
-    @Override
-    public void setSalidas(ArrayList<Slot> salidas) {
-        this.salidas = salidas;
-    }
 
     public String getTagClave() {
         return tagClave;
