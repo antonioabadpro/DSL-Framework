@@ -11,35 +11,49 @@ import java.util.ArrayList;
  *
  * @author agustinrodriguez
  */
-public abstract class Tarea {
-    
-    private ArrayList<Slot> entradas;
-    private ArrayList<Slot> salidas;
+public abstract class Tarea
+{
+    private ArrayList<Slot> slotEntradas;
+    private ArrayList<Slot> slotSalidas;
     private TipoTarea tipo;
+
+    public Tarea(ArrayList<Slot> slotEntradas, ArrayList<Slot> slotSalidas, TipoTarea tipo)
+    {
+        this.slotEntradas = slotEntradas;
+        this.slotSalidas = slotSalidas;
+        this.tipo = tipo;
+    }
     
-    public abstract void ejecutar();
-
-    public ArrayList<Slot> getEntradas() {
-        return entradas;
+    // <editor-fold defaultstate="collapsed" desc="Getters y Setters">
+    public ArrayList<Slot> getEntradas()
+    {
+        return slotEntradas;
     }
 
-    public void setEntradas(ArrayList<Slot> entradas) {
-        this.entradas = entradas;
+    public void setEntradas(ArrayList<Slot> entradas)
+    {
+        this.slotEntradas = entradas;
     }
 
-    public ArrayList<Slot> getSalidas() {
-        return salidas;
+    public ArrayList<Slot> getSalidas()
+    {
+        return slotSalidas;
     }
 
-    public void setSalidas(ArrayList<Slot> salidas) {
-        this.salidas = salidas;
+    public void setSalidas(ArrayList<Slot> salidas)
+    {
+        this.slotSalidas = salidas;
     }
 
-    public TipoTarea getTipo() {
+    public TipoTarea getTipo()
+    {
         return tipo;
     }
 
-    public void setTipo(TipoTarea tipo) {
+    public void setTipo(TipoTarea tipo)
+    {
         this.tipo = tipo;
-    }    
-}
+    }
+    // </editor-fold>
+
+    public abstract void ejecutar();

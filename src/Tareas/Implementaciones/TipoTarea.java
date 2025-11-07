@@ -8,6 +8,9 @@ package Tareas.Implementaciones;
  *
  * @author agustinrodriguez
  */
-public enum TipoTarea {
-    ENRUTADORAS, MODIFICADORAS, TRANSFORMADORAS
+public enum TipoTarea
+{
+    ENRUTADORAS,
+    MODIFICADORAS,
+    TRANSFORMADORAS
 }
