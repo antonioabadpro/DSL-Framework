@@ -57,3 +57,4 @@ public abstract class Tarea
     // </editor-fold>
 
     public abstract void ejecutar();
+}
