@@ -18,33 +18,10 @@ import org.w3c.dom.Document;
  */
 public class Merger extends Tarea
 {
-    private ArrayList<Slot> listaSlotsEntrada;
-    private Slot slotSalida;
     
-    public Merger(ArrayList<Slot> listaSlotsEntrada, Slot slotSalida, TipoTarea tipo)
+    public Merger(ArrayList<Slot> listaSlotsEntrada, ArrayList<Slot> slotSalida, TipoTarea tipo)
     {
-        super(tipo);
-        for(Slot s: listaSlotsEntrada)
-        {
-            this.listaSlotsEntrada.add(s);
-        }
-        
-        this.slotSalida=slotSalida;
-    }
-    
-    public ArrayList<Slot> getSlotEntradas()
-    {
-        return this.listaSlotsEntrada;
-    }
-
-    public Slot getSlotSalida()
-    {
-        return this.slotSalida;
-    }
-
-    public void setSlotSalida(Slot slotSalida)
-    {
-        this.slotSalida = slotSalida;
+        super(listaSlotsEntrada, slotSalida, tipo);
     }
     
     /**
@@ -54,17 +31,11 @@ public class Merger extends Tarea
      */
     public void ejecutar()
     {
-        if (this.listaSlotsEntrada == null || this.listaSlotsEntrada.isEmpty())
-        {
-            //throw new Exception("NO hay ningun Slot de Entrada definido en la tarea Merger");
-        }
-        if (this.slotSalida == null)
-        {
-            //throw new Exception("NO hay ningun Slot de Salida definido en la tarea Merger");
-        }
+        ArrayList<Slot> listaSlotsEntrada = getEntradas();
+        ArrayList<Slot> slotSalida = getSalidas();
 
         // Recorremos cada Slot de Entrada
-        for (Slot s : this.listaSlotsEntrada)
+        for (Slot s : listaSlotsEntrada)
         {
             // Obtenemos el numero de mensajes que quieren escribir en cada Slot de Entrada
             int numMensajes = s.getQueue().size();
@@ -80,15 +51,17 @@ public class Merger extends Tarea
                     {
                         try
                         {
-                            this.slotSalida.escribir(mensaje);
+                            slotSalida.getFirst().escribir(mensaje);
                         } catch (Exception ex)
                         {
                             Logger.getLogger(Merger.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("Merger: Error al escribir en el Slot de Salida");
                         }
                     }
                 } catch (Exception ex)
                 {
                     Logger.getLogger(Merger.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Merger: Error al lerr del Slot de Entrada");
                 }
             }
         }

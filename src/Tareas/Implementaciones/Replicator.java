@@ -18,38 +18,10 @@ import org.w3c.dom.Document;
  */
 public class Replicator extends Tarea
 {
-    private ArrayList<Slot> listaSlotsSalida;
-    private Slot slotEntrada;
     
-    public Replicator(Slot slotEntrada, ArrayList<Slot> listaSlotsSalida, TipoTarea tipo)
+    public Replicator(ArrayList<Slot> slotEntrada, ArrayList<Slot> listaSlotsSalida, TipoTarea tipo)
     {
-        super(tipo);
-        this.slotEntrada=slotEntrada;
-        
-        for(Slot s: listaSlotsSalida)
-        {
-            this.listaSlotsSalida.add(s);
-        }
-    }
-    
-    public Slot getSlotEntrada()
-    {
-        return this.slotEntrada;
-    }
-
-    public ArrayList<Slot> getSlotsSalida()
-    {
-        return this.listaSlotsSalida;
-    }
-
-    public void setSlotEntrada(Slot slotEntrada)
-    {
-        this.slotEntrada = slotEntrada;
-    }
-
-    public void setSlotsSalida(ArrayList<Slot> listaSlotsSalida)
-    {
-        this.listaSlotsSalida = listaSlotsSalida;
+        super(slotEntrada, listaSlotsSalida, tipo);
     }
     
     /**
@@ -58,28 +30,22 @@ public class Replicator extends Tarea
      */
     public void ejecutar()
     {
-        if (this.slotEntrada == null)
-        {
-            //throw new Exception("NO hay ningun Slot de Entrada definido en la tarea Replicator");
-        }
-        if (this.listaSlotsSalida == null || this.listaSlotsSalida.isEmpty())
-        {
-            //throw new Exception("NO hay ningun Slot de Salida definido en la tarea Replicator");
-        }
+        ArrayList<Slot> slotEntrada = getEntradas();
+        ArrayList<Slot> listaSlotsSalida = getSalidas();
 
-        int numMensajes = this.slotEntrada.getQueue().size();
+        int numMensajes = slotEntrada.getFirst().getQueue().size();
         
         for (int i = 0; i < numMensajes; i++)
         {
             Document mensaje;
             try
             {
-                mensaje = this.slotEntrada.leer();
+                mensaje = slotEntrada.getFirst().leer();
                 
                 if (mensaje != null)
                 {
                     // Replicamos el mismo mensaje en cada Slot de Salida
-                    for (Slot salida : this.listaSlotsSalida)
+                    for (Slot salida : listaSlotsSalida)
                     {
                         try
                         {
@@ -87,12 +53,14 @@ public class Replicator extends Tarea
                         } catch (Exception ex)
                         {
                             Logger.getLogger(Replicator.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("Replicator: Error al escribir en el Slot de Salida");
                         }
                     }
                 }
             } catch (Exception ex)
             {
                 Logger.getLogger(Replicator.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Replicator: Error al leer del Slot de Entrada");
             }
         }
     }
