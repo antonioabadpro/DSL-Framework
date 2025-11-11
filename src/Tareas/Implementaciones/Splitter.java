@@ -1,12 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import Mensajes.Mensaje; // CAMBIO: Importar Mensaje
 import static Tareas.Implementaciones.TipoTarea.TRANSFORMADORAS;
 import java.util.ArrayList;
+import java.util.HashMap; // CAMBIO: Importar HashMap para la cabecera
+import java.util.Map; // CAMBIO: Importar Map
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,38 +20,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *
  * Clase Splitter genérica
- * Divide un XML en múltiples mensajes individuales (n elementos de una lista), agregando metadatos.
- *
- * Ejemplo:
- *   <cafe_order>
- *       <order_id>1</order_id>
- *       <drinks>
- *           <drink>...</drink>
- *           <drink>...</drink>
- *       </drinks>
- *   </cafe_order>
- *
- * Cada salida incluirá:
- *   <mensaje>
- *       <metadatos>
- *           <id_secuencia>1</id_secuencia>
- *           <posicion_secuencia>1</posicion_secuencia>
- *           <tamanio_secuencia>2</tamanio_secuencia>
- *       </metadatos>
- *       <datos>
- *           <drink>...</drink>
- *       </datos>
- *   </mensaje>
- *
- * @author agustinrodriguez
+ * Divide un XML en múltiples mensajes individuales.
+ * crea un objeto Mensaje con una cabecera y un cuerpo.
+ * * @author agustinrodriguez
  */
 public class Splitter extends Tarea{
 
-    private String groupTag;   // Ej: "drinks", "productos", "items"
-    private String elementTag; // Ej: "drink", "producto", "item"
-    private String idTag;      // Ej: "order_id", "pedido_id"
+    private String groupTag;   // Ej: "drinks"
+    private String elementTag; // Ej: "drink"
+    private String idTag;      // Ej: "order_id"
 
     public Splitter(ArrayList<Slot> entrada, ArrayList<Slot> salida, String groupTag, String elementTag, String idTag) {
         super(entrada, salida, TRANSFORMADORAS);
@@ -64,21 +41,28 @@ public class Splitter extends Tarea{
     @Override
     public void ejecutar() {
         try {
-            // Crear parser de documentos XML
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Slot entrada = getEntradas().getFirst();
             Slot salida = getSalidas().getFirst();
             
-            // Leer documento de entrada desde el slot
-            Document doc = entrada.leer();
+            // CAMBIO: Leer el Mensaje de entrada
+            Mensaje msgEntrada = entrada.leer();
+            if (msgEntrada == null) {
+                System.out.println("Splitter: No hay mensaje en la entrada.");
+                return;
+            }
+            
+            // CAMBIO: Obtener cuerpo y cabecera
+            Document doc = msgEntrada.getCuerpo();
+            Map<String, Object> cabeceraOriginal = msgEntrada.getCabecera();
+            
             XPath xPath = XPathFactory.newInstance().newXPath();
             
-            // Obtener los elementos dentro del grupo configurado (ej: //drinks/drink)
+            // Lógica original de XPath
             String expression = String.format("//%s/%s", groupTag, elementTag);
             NodeList elementos = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
             
-            // Obtener el ID de secuencia (por ejemplo, order_id)
             NodeList idNodes = doc.getElementsByTagName(idTag);
             String idSecuencia = "N/A";
             if (idNodes != null && idNodes.getLength() > 0 && idNodes.item(0) != null) {
@@ -87,46 +71,34 @@ public class Splitter extends Tarea{
             
             int total = (elementos != null) ? elementos.getLength() : 0;
             
-            // Procesar cada elemento individual
             for (int i = 0; i < total; i++) {
                 Node elemento = elementos.item(i);
                 
-                // Validar el tipo de nodo antes de continuar
                 boolean esElementoValido = elemento != null && elemento.getNodeType() == Node.ELEMENT_NODE;
                 
                 if (esElementoValido) {
-                    // Crear un nuevo documento de salida
-                    Document nuevoDoc = builder.newDocument();
                     
-                    // Nodo raíz <mensaje>
-                    Element mensaje = nuevoDoc.createElement("mensaje");
-                    nuevoDoc.appendChild(mensaje);
+                    // --- CAMBIO: Crear el nuevo Mensaje ---
                     
-                    // --- Sección de metadatos ---
-                    Element metadatos = nuevoDoc.createElement("metadatos");
-                    mensaje.appendChild(metadatos);
+                    // 1. Crear el NUEVO CUERPO (solo el fragmento XML)
+                    Document nuevoCuerpo = builder.newDocument();
+                    Node itemImportado = nuevoCuerpo.importNode(elemento, true);
+                    nuevoCuerpo.appendChild(itemImportado);
                     
-                    Element id = nuevoDoc.createElement("id_secuencia");
-                    id.setTextContent(idSecuencia);
-                    metadatos.appendChild(id);
+                    // 2. Crear la NUEVA CABECERA
+                    // Copiamos la cabecera original para preservar sus datos
+                    Map<String, Object> nuevaCabecera = new HashMap<>(cabeceraOriginal);
                     
-                    Element posicion = nuevoDoc.createElement("posicion_secuencia");
-                    posicion.setTextContent(String.valueOf(i + 1));
-                    metadatos.appendChild(posicion);
+                    // Añadimos los metadatos del Split
+                    nuevaCabecera.put("id_secuencia", idSecuencia);
+                    nuevaCabecera.put("posicion_secuencia", i + 1); // Posición es 1-based
+                    nuevaCabecera.put("tamanio_secuencia", total);
                     
-                    Element tamanio = nuevoDoc.createElement("tamanio_secuencia");
-                    tamanio.setTextContent(String.valueOf(total));
-                    metadatos.appendChild(tamanio);
+                    // 3. Crear el NUEVO MENSAJE de salida
+                    Mensaje msgSalida = new Mensaje(nuevaCabecera, nuevoCuerpo);
                     
-                    // --- Sección de datos ---
-                    Element datos = nuevoDoc.createElement("datos");
-                    mensaje.appendChild(datos);
-                    
-                    Node itemImportado = nuevoDoc.importNode(elemento, true);
-                    datos.appendChild(itemImportado);
-                    
-                    // Escribir en el slot de salida
-                    salida.escribir(nuevoDoc);
+                    // 4. Escribir en el slot de salida
+                    salida.escribir(msgSalida);
                 }
             }
         } catch (ParserConfigurationException ex) {
@@ -149,5 +121,4 @@ public class Splitter extends Tarea{
     public void setIdTag(String idTag) {
         this.idTag = idTag;
     }
-    
 }

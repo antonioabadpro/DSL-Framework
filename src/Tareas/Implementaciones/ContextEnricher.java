@@ -1,6 +1,7 @@
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import Mensajes.Mensaje; // Importar
 import java.util.ArrayList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,57 +9,63 @@ import org.w3c.dom.Node;
 
 public class ContextEnricher extends Tarea {
   
-    private Slot contexto;
+    // CAMBIO: Ya no es un Slot, es la CLAVE del almacén
+    private String claveContexto;
 
-    public ContextEnricher(ArrayList<Slot> entrada, Slot contexto, ArrayList<Slot> salida) {
+    public ContextEnricher(ArrayList<Slot> entrada, String claveContexto, ArrayList<Slot> salida) {
         super(entrada, salida, TipoTarea.MODIFICADORAS);
-        this.contexto = contexto;
+        this.claveContexto = claveContexto;
     }
 
-    public Slot getContexto() {
-        return contexto;
+    public String getClaveContexto() {
+        return claveContexto;
     }
 
-    public void setContexto(Slot contexto) {
-        this.contexto = contexto;
+    public void setClaveContexto(String claveContexto) {
+        this.claveContexto = claveContexto;
     }
 
     @Override
     public void ejecutar() {
-
         Document documentoContexto;
         Element elementoContexto = null;
 
         try {
-            documentoContexto = this.contexto.leer();
+            // CAMBIO: Obtenemos el contexto desde el Almacén
+            // (El campo 'almacen' viene de la clase Tarea)
+            documentoContexto = (Document) almacen.obtener(this.claveContexto);
 
             if (documentoContexto == null) {
-                System.out.println("El slot de contexto está vacío");
+                System.out.println("ContextEnricher: No se encontró contexto en el almacén con clave: " + claveContexto);
                 return;
-            } 
-            else {
+            } else {
                 elementoContexto = documentoContexto.getDocumentElement();
             }
-
         } catch (Exception e) {
-            System.out.println("Excepcion al leer contexto: " + e.getMessage());
+            System.out.println("Excepcion al leer contexto del almacén: " + e.getMessage());
+            return; // No podemos continuar si no hay contexto
         }
 
-        while (!this.getEntradas().get(0).getQueue().isEmpty()) {
-            Document docMensaje = null;
-
+        while (!this.getEntradas().get(0).estaVacio()) {
+            Mensaje msgEntrada = null;
             try {
-                docMensaje = this.getEntradas().get(0).leer();
-                if (docMensaje != null) {
-                    
-                    //enriquecer
-                    Element elementoMensaje = docMensaje.getDocumentElement();
-                    Node nodoImportado = docMensaje.importNode(elementoContexto, true);
-                    elementoMensaje.appendChild(nodoImportado);
+                // Leemos el Mensaje completo
+                msgEntrada = this.getEntradas().get(0).leer();
+                if (msgEntrada == null) continue;
+                
+                // Obtenemos el cuerpo para modificarlo
+                Document docMensaje = msgEntrada.getCuerpo();
+                
+                // Lógica de enriquecimiento (igual que antes)
+                Element elementoMensaje = docMensaje.getDocumentElement();
+                Node nodoImportado = docMensaje.importNode(elementoContexto, true);
+                elementoMensaje.appendChild(nodoImportado);
 
-                    this.getSalidas().get(0).escribir(docMensaje);
-                }
-
+                // CAMBIO: Escribimos el MENSAJE ORIGINAL.
+                // Como modificamos su 'cuerpo' (docMensaje) "in-place", 
+                // la cabecera se preserva automáticamente.
+                this.getSalidas().get(0).escribir(msgEntrada);
+                
             } catch (Exception e) {
                 System.out.println("Excepcion procesando un mensaje: " + e.getMessage());
             }

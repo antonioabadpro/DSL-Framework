@@ -1,14 +1,8 @@
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import Mensajes.Mensaje;
 import java.util.ArrayList;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class Distributor extends Tarea {
 
@@ -18,24 +12,27 @@ public class Distributor extends Tarea {
 
     @Override
     public void ejecutar() {
-
-
-        while (!this.getEntradas().get(0).getQueue().isEmpty()) {
-            Document docOriginal = null;
+        // Usamos el nuevo método estaVacio() del Slot
+        while (!this.getEntradas().get(0).estaVacio()) {
+            Mensaje msgOriginal = null;
             try {
-
-                docOriginal = getEntradas().get(0).leer();
-                if (docOriginal != null) {
-
+                // leer() ahora devuelve Mensaje y no lanza excepción
+                msgOriginal = getEntradas().get(0).leer();
+                
+                if (msgOriginal != null) {
                     for (int i = 0; i < getSalidas().size(); i++) {
                         Slot salida = getSalidas().get(i);
-                        Document docCopia = (Document) docOriginal.cloneNode(true);
-                        salida.escribir(docCopia);
+                        
+                        // Usamos el método helper de Tarea para clonar
+                        Mensaje msgCopia = clonarMensaje(msgOriginal);
+                        
+                        // escribir() ahora no lanza excepción
+                        salida.escribir(msgCopia);
                     }
                 }
-
             } catch (Exception e) {
-                System.out.println("Excepcion al leer: " + e.getMessage());
+                // Este catch es para el .cloneNode() u otro error inesperado
+                System.out.println("Excepcion en Distributor: " + e.getMessage());
             }
         }
     }

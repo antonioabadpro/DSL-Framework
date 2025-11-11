@@ -5,10 +5,10 @@
 package Tareas.Implementaciones;
 
 import Puertos.Slot;
+import Mensajes.Mensaje; // Importar
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.w3c.dom.Document;
 
 /**
  *
@@ -16,51 +16,37 @@ import org.w3c.dom.Document;
  * Entradas = 1
  * Salidas = n
  */
-public class Replicator extends Tarea
-{
+public class Replicator extends Tarea {
     
-    public Replicator(ArrayList<Slot> slotEntrada, ArrayList<Slot> listaSlotsSalida, TipoTarea tipo)
-    {
+    public Replicator(ArrayList<Slot> slotEntrada, ArrayList<Slot> listaSlotsSalida, TipoTarea tipo) {
         super(slotEntrada, listaSlotsSalida, tipo);
     }
     
-    /**
-     * Ejecuta la tarea de Replicator
-     * Lee los mensajes del Slot de entrada y los replica en todos los Slots de Salida
-     */
-    public void ejecutar()
-    {
-        ArrayList<Slot> slotEntrada = getEntradas();
+    @Override
+    public void ejecutar() {
+        Slot slotEntrada = getEntradas().getFirst();
         ArrayList<Slot> listaSlotsSalida = getSalidas();
 
-        int numMensajes = slotEntrada.getFirst().getQueue().size();
-        
-        for (int i = 0; i < numMensajes; i++)
-        {
-            Document mensaje;
-            try
-            {
-                mensaje = slotEntrada.getFirst().leer();
+        // Usamos el nuevo método estaVacio()
+        while (!slotEntrada.estaVacio()) {
+            Mensaje msgOriginal;
+            try {
+                // leer() devuelve Mensaje
+                msgOriginal = slotEntrada.leer();
                 
-                if (mensaje != null)
-                {
+                if (msgOriginal != null) {
                     // Replicamos el mismo mensaje en cada Slot de Salida
-                    for (Slot salida : listaSlotsSalida)
-                    {
-                        try
-                        {
-                            salida.escribir(mensaje);
-                        } catch (Exception ex)
-                        {
-                            Logger.getLogger(Replicator.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("Replicator: Error al escribir en el Slot de Salida");
-                        }
+                    for (Slot salida : listaSlotsSalida) {
+                        // Usamos el método helper de Tarea para clonar
+                        Mensaje msgCopia = clonarMensaje(msgOriginal);
+                        
+                        // escribir() toma Mensaje
+                        salida.escribir(msgCopia);
                     }
                 }
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.getLogger(Replicator.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Replicator: Error al leer del Slot de Entrada");
+                System.out.println("Replicator: Error al procesar mensaje");
             }
         }
     }

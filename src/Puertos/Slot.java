@@ -4,9 +4,9 @@
  */
 package Puertos;
 
-import java.util.LinkedList;
+import Mensajes.Mensaje;
 import java.util.Queue;
-import org.w3c.dom.Document;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -14,18 +14,43 @@ import org.w3c.dom.Document;
  */
 public class Slot {
  
-    private Queue<Document> testQueue = new LinkedList();
+    // Ahora la cola opera con los mensajes.
+    private final Queue<Mensaje> queue = new ConcurrentLinkedQueue<>();
 
-    public Queue getQueue() {
-        return testQueue;
+    /**
+     * Lee y elimina un mensaje de la cola.
+     * Usa poll() que devuelve null si la cola está vacía (más seguro que remove()).
+     * Ya no lanza Exception, simplificando las tareas.
+     * @return 
+     */
+    public Mensaje leer() {
+        return queue.poll();
     }
 
-    public Document leer() throws Exception {
-        return testQueue.remove();
+    /**
+     * Escribe un mensaje en la cola.
+     * Ya no lanza Exception.
+     * @param msg
+     */
+    public void escribir(Mensaje msg) {
+        queue.add(msg);
     }
-
-    public void escribir(Document doc) throws Exception {
-        testQueue.add(doc);
+    
+    /**
+     * Método seguro para consultar el tamaño de la cola.
+     * Reemplaza la necesidad de getQueue().size()
+     * @return 
+     */
+    public int getTamanio() {
+        return queue.size();
+    }
+    
+    /**
+     * Método seguro para consultar si la cola está vacía.
+     * @return 
+     */
+    public boolean estaVacio() {
+        return queue.isEmpty();
     }
     
 }
