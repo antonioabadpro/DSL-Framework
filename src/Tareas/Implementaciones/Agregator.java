@@ -46,11 +46,32 @@ public class Agregator extends Tarea{
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    public String getEtiquetaGrupo() {
+        public String getEtiquetaGrupo() {
         return etiquetaGrupo;
     }
-    // ... (otros getters y setters) ...
+
+    public void setEtiquetaGrupo(String etiquetaGrupo) {
+        this.etiquetaGrupo = etiquetaGrupo;
+    }
+
+    public String getEtiquetaElemento() {
+        return etiquetaElemento;
+    }
+
+    public void setEtiquetaElemento(String etiquetaElemento) {
+        this.etiquetaElemento = etiquetaElemento;
+    }
+
+    public String getEtiquetaId() {
+        return etiquetaId;
+    }
+
+    public void setEtiquetaId(String etiquetaId) {
+        this.etiquetaId = etiquetaId;
+    }
     // </editor-fold>
+
+
     
     
     @Override
