@@ -6,6 +6,7 @@ package Tareas.Implementaciones;
 
 import Puertos.Slot;
 import Mensajes.Mensaje; // Importar
+import static Tareas.Implementaciones.TipoTarea.ENRUTADORAS;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class Replicator extends Tarea {
     
-    public Replicator(ArrayList<Slot> slotEntrada, ArrayList<Slot> listaSlotsSalida, TipoTarea tipo) {
-        super(slotEntrada, listaSlotsSalida, tipo);
+    public Replicator(ArrayList<Slot> slotEntrada, ArrayList<Slot> listaSlotsSalida) {
+        super(slotEntrada, listaSlotsSalida, ENRUTADORAS);
     }
     
     @Override

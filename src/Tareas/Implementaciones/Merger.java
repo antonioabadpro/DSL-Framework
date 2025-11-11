@@ -6,6 +6,7 @@ package Tareas.Implementaciones;
 
 import Puertos.Slot;
 import Mensajes.Mensaje; // Importar
+import static Tareas.Implementaciones.TipoTarea.ENRUTADORAS;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
 
 public class Merger extends Tarea {
     
-    public Merger(ArrayList<Slot> listaSlotsEntrada, ArrayList<Slot> slotSalida, TipoTarea tipo) {
-        super(listaSlotsEntrada, slotSalida, tipo);
+    public Merger(ArrayList<Slot> listaSlotsEntrada, ArrayList<Slot> slotSalida) {
+        super(listaSlotsEntrada, slotSalida, ENRUTADORAS);
     }
     
     @Override

@@ -26,7 +26,7 @@ public class Translator extends Tarea {
     private Source xslt;
     private Transformer transformador;
 
-    public Translator(ArrayList<Slot> entradas, ArrayList<Slot> salidas, String archivoXSLT) throws TransformerConfigurationException {
+    public Translator(ArrayList<Slot> entradas, ArrayList<Slot> salidas, String archivoXSLT) {
         // CAMBIO: Asegurarse de que el constructor base se llame correctamente
         super(entradas, salidas, TipoTarea.TRANSFORMADORAS);
         
@@ -41,7 +41,11 @@ public class Translator extends Tarea {
 
         TransformerFactory fabrica = TransformerFactory.newInstance();
         this.xslt = new StreamSource(new File(archivoXSLT));
-        this.transformador = fabrica.newTransformer(xslt);
+        try {
+            this.transformador = fabrica.newTransformer(xslt);
+        } catch (TransformerConfigurationException ex) {
+            System.out.println("Translator: Error al crear el transformador "+ ex);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getter & Setters">

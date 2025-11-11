@@ -18,7 +18,7 @@ public class ReplicatorTest extends BaseTaskTest {
         ArrayList<Slot> entradas = new ArrayList<>() {{ add(inSlot); }};
         ArrayList<Slot> salidas = new ArrayList<>() {{ add(outSlot1); add(outSlot2); }};
 
-        Replicator replicator = new Replicator(entradas, salidas, TipoTarea.ENRUTADORAS);
+        Replicator replicator = new Replicator(entradas, salidas);
 
         // --- Ejecución ---
         replicator.ejecutar();

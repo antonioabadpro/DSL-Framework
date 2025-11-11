@@ -19,7 +19,7 @@ public class MergerTest extends BaseTaskTest {
         ArrayList<Slot> entradas = new ArrayList<>() {{ add(inSlot1); add(inSlot2); }};
         ArrayList<Slot> salidas = new ArrayList<>() {{ add(outSlot); }};
 
-        Merger merger = new Merger(entradas, salidas, TipoTarea.ENRUTADORAS);
+        Merger merger = new Merger(entradas, salidas);
 
         // --- Ejecución ---
         merger.ejecutar();
