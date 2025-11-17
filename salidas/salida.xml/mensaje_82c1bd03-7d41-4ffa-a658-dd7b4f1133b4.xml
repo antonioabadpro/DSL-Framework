@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cafe_order>
+    <drink>
+        <name>te</name>
+        <type>hot</type>
+        <stock>true</stock>
+    </drink>
+    <drink>
+        <name>tonica</name>
+        <type>cold</type>
+        <stock>false</stock>
+    </drink>
+    <drink>
+        <name>coca-cola</name>
+        <type>cold</type>
+        <stock>true</stock>
+    </drink>
+    <drink>
+        <name>guarana</name>
+        <type>cold</type>
+        <stock>false</stock>
+    </drink>
+</cafe_order>
