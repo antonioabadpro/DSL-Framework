@@ -2,6 +2,7 @@ package Tareas;
 
 import Slots.Slot;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Clase Abstracta que contiene los metodos que deben implementar todas las Tareas de nuestro Framework/Libreria
@@ -12,12 +13,14 @@ public abstract class Tarea {
     protected ArrayList<Slot> listaEntradas;
     protected ArrayList<Slot> listaSalidas;
     protected Tipo tipoTarea;
+    protected UUID id;
     
     // Constructor
     public Tarea(ArrayList<Slot> entradas, ArrayList<Slot> salidas, Tipo tipoTarea) {
         this.listaEntradas = entradas;
         this.listaSalidas = salidas;
         this.tipoTarea = tipoTarea;
+        this.id = UUID.randomUUID();
     }
     
     // Metodos Abstractos
@@ -42,6 +45,12 @@ public abstract class Tarea {
 
     public Tipo getTipoTarea() {
         return tipoTarea;
-    }    
+    }  
+
+    public UUID getId() {
+        return id;
+    }
+    
+    
     
 }
