@@ -21,7 +21,7 @@ public class AppCorrelationIdSetter {
         } catch (ClassNotFoundException e) {
             System.out.println("NO se encontró la clase del driver PostgreSQL: " + e.getMessage());
         }
-        
+
         // Creamos los Slots necesarios para el problema de Cafe
         Slot sPuertoEntradaSplitter = new Slot();
         Slot sSplitterDistributor = new Slot();
@@ -35,10 +35,11 @@ public class AppCorrelationIdSetter {
         Slot sTranslatorPuertoSolicitud_BebidasC = new Slot();
         Slot sPuertoSolicitudCorrelator_BebidasF = new Slot();
         Slot sPuertoSolicitudCorrelator_BebidasC = new Slot();
+
+        // Slots entre CorrelationIdSetter y ContextEnricher (solo 1 por bebida)
         Slot sCorrelationIdSetterContextEnricher_1_BebidasF = new Slot();
-        Slot sCorrelationIdSetterContextEnricher_2_BebidasF = new Slot();
         Slot sCorrelationIdSetterContextEnricher_1_BebidasC = new Slot();
-        Slot sCorrelationIdSetterContextEnricher_2_BebidasC = new Slot();
+
         Slot sContextEnricherMerger_BebidasF = new Slot();
         Slot sContextEnricherMerger_BebidasC = new Slot();
         Slot sMergerAgregator = new Slot();
@@ -51,10 +52,10 @@ public class AppCorrelationIdSetter {
         PuertoSalida puertoSalida = new PuertoSalida(sAggregatorPuertoSalida);
 
         // Creamos los Conectores necesarios para el problema de Cafe
-        System.out.println("Escribe el nombre de la comanda que quieres procesar: (sin .xml)");
+        System.out.print("Escribe el nombre de la comanda que quieres procesar: (sin .xml): ");
         Scanner sc = new Scanner(System.in);
         String comanda = sc.nextLine();
-        ConectorEntrada conectorEntrada = new ConectorEntrada(puertoEntrada, "src/Comandas/" + comanda + ".xml"); // Ruta Relativa al DIR de ejecucion del Programa
+        ConectorEntrada conectorEntrada = new ConectorEntrada(puertoEntrada, "src/Comandas/" + comanda + ".xml");
 
         String urlPostgres = "jdbc:postgresql://aws-1-eu-north-1.pooler.supabase.com:5432/postgres?user=postgres.wttznbvrlqmioczuafnx&password=bdiia202512345";
 
@@ -73,8 +74,6 @@ public class AppCorrelationIdSetter {
         ConectorBD conector_BebidasC = new ConectorBD(puertoSolicitud_BebidasC, urlPostgres);
         ConectorSalida conectorSalida = new ConectorSalida(puertoSalida, "./salidas/");
 
-        // Creamos las Tareas necesarias para el problema de Cafe
-        
         // Splitter: sPuertoEntradaSplitter -> sSplitterDistributor
         ArrayList<Slot> splitterEntrada = new ArrayList<>();
         splitterEntrada.add(sPuertoEntradaSplitter);
@@ -93,7 +92,7 @@ public class AppCorrelationIdSetter {
         reglasDistributor.add("drink/type = 'hot'");  // BC - Bebidas Calientes
         Distributor distributor = new Distributor(distributorEntrada, distributorSalida, reglasDistributor);
 
-        // Replicator BebidasF: sDistributorReplicator_BebidasF -> sReplicatorTranslator_BebidasF + sReplicatorCorrelator_BebidasF
+        // Replicator BebidasF: sDistributorReplicator_BebidasF -> sReplicatorTranslator_BebidasF + sReplicatorCorrelationIdSetter_BebidasF
         ArrayList<Slot> replicatorEntrada_BebidasF = new ArrayList<>();
         replicatorEntrada_BebidasF.add(sDistributorReplicator_BebidasF);
         ArrayList<Slot> replicatorSalida_BebidasF = new ArrayList<>();
@@ -101,7 +100,7 @@ public class AppCorrelationIdSetter {
         replicatorSalida_BebidasF.add(sReplicatorCorrelationIdSetter_BebidasF);
         Replicator replicatorBebidasF = new Replicator(replicatorEntrada_BebidasF, replicatorSalida_BebidasF);
 
-        // Replicator BebidasC: sDistributorReplicator_BebidasC -> sReplicatorTranslator_BebidasC + sReplicatorCorrelator_BebidasC
+        // Replicator BebidasC: sDistributorReplicator_BebidasC -> sReplicatorTranslator_BebidasC + sReplicatorCorrelationIdSetter_BebidasC
         ArrayList<Slot> replicatorEntrada_BebidasC = new ArrayList<>();
         replicatorEntrada_BebidasC.add(sDistributorReplicator_BebidasC);
         ArrayList<Slot> replicatorSalida_BebidasC = new ArrayList<>();
@@ -123,39 +122,48 @@ public class AppCorrelationIdSetter {
         translatorSalida_BebidasC.add(sTranslatorPuertoSolicitud_BebidasC);
         Translator translatorBebidasC = new Translator(translatorEntrada_BebidasC, translatorSalida_BebidasC, "src/Formatos/BebidasCalientes.xsl");
 
-        // CorrelationIdSetter BebidasC: sReplicatorCorrelationIdSetter_BebidasF + sPuertoSolicitudCorrelationIdSetter_BebidasF -> sCorrelatorContextEnricher_1_BebidasF + sCorrelatorContextEnricher_2_BebidasF
+        // ********** CorrelationIdSetter BebidasF: 1 entrada, 1 salida **********
         ArrayList<Slot> correlationIdSetterEntrada_BebidasF = new ArrayList<>();
+        // Solo el mensaje que viene del Replicator
         correlationIdSetterEntrada_BebidasF.add(sReplicatorCorrelationIdSetter_BebidasF);
-        correlationIdSetterEntrada_BebidasF.add(sPuertoSolicitudCorrelator_BebidasF);
-        ArrayList<Slot> correlationIdSetterSalida_BebidasF = new ArrayList<>();
-        correlationIdSetterSalida_BebidasF.add(sCorrelationIdSetterContextEnricher_1_BebidasF);
-        correlationIdSetterSalida_BebidasF.add(sCorrelationIdSetterContextEnricher_2_BebidasF);
-        CorrelationIdSetter correlationIdSetter_BebidasF = new CorrelationIdSetter(correlationIdSetterEntrada_BebidasF, correlationIdSetterSalida_BebidasF);
 
-        // CorrelationIdSetter BebidasC: sReplicatorCorrelationIdSetter_BebidasC + sPuertoSolicitudCorrelationIdSetter_BebidasC -> sCorrelatorContextEnricher_1_BebidasC + sCorrelatorContextEnricher_2_BebidasC
+        ArrayList<Slot> correlationIdSetterSalida_BebidasF = new ArrayList<>();
+        // Una única salida hacia el ContextEnricher
+        correlationIdSetterSalida_BebidasF.add(sCorrelationIdSetterContextEnricher_1_BebidasF);
+
+        CorrelationIdSetter correlationIdSetter_BebidasF =
+                new CorrelationIdSetter(correlationIdSetterEntrada_BebidasF, correlationIdSetterSalida_BebidasF);
+
+        // ********** CorrelationIdSetter BebidasC: 1 entrada, 1 salida **********
         ArrayList<Slot> correlationIdSetterEntrada_BebidasC = new ArrayList<>();
         correlationIdSetterEntrada_BebidasC.add(sReplicatorCorrelationIdSetter_BebidasC);
-        correlationIdSetterEntrada_BebidasC.add(sPuertoSolicitudCorrelator_BebidasC);
+
         ArrayList<Slot> correlationIdSetterSalida_BebidasC = new ArrayList<>();
         correlationIdSetterSalida_BebidasC.add(sCorrelationIdSetterContextEnricher_1_BebidasC);
-        correlationIdSetterSalida_BebidasC.add(sCorrelationIdSetterContextEnricher_2_BebidasC);
-        CorrelationIdSetter correlationIdSetter_BebidasC = new CorrelationIdSetter(correlationIdSetterEntrada_BebidasC, correlationIdSetterSalida_BebidasC);
 
-        // ContextEnricher BebidasF: sCorrelatorContextEnricher_1_BebidasF + sCorrelatorContextEnricher_2_BebidasF -> sContextEnricherMerger_BebidasF
+        CorrelationIdSetter correlationIdSetter_BebidasC =
+                new CorrelationIdSetter(correlationIdSetterEntrada_BebidasC, correlationIdSetterSalida_BebidasC);
+
+        // ********** ContextEnricher BebidasF **********
+        // Entradas: salida del CorrelationIdSetter + respuesta de BD (PuertoSolicitud)
         ArrayList<Slot> contextEnricherEntrada_BebidasF = new ArrayList<>();
-        contextEnricherEntrada_BebidasF.add(sCorrelationIdSetterContextEnricher_1_BebidasF);
-        contextEnricherEntrada_BebidasF.add(sCorrelationIdSetterContextEnricher_2_BebidasF);
+        contextEnricherEntrada_BebidasF.add(sCorrelationIdSetterContextEnricher_1_BebidasF); // del CorrelationIdSetter
+        contextEnricherEntrada_BebidasF.add(sPuertoSolicitudCorrelator_BebidasF);            // respuesta BD
+
         ArrayList<Slot> contextEnricherSalida_BebidasF = new ArrayList<>();
         contextEnricherSalida_BebidasF.add(sContextEnricherMerger_BebidasF);
-        ContextEnricher contextEnricherBebidasF = new ContextEnricher(contextEnricherEntrada_BebidasF, contextEnricherSalida_BebidasF);
+        ContextEnricher contextEnricherBebidasF =
+                new ContextEnricher(contextEnricherEntrada_BebidasF, contextEnricherSalida_BebidasF);
 
-        // ContextEnricher BebidasC: sCorrelatorContextEnricher_1_BebidasC + sCorrelatorContextEnricher_2_BebidasC -> sContextEnricherMerger_BebidasC
+        // ********** ContextEnricher BebidasC **********
         ArrayList<Slot> contextEnricherEntrada_BebidasC = new ArrayList<>();
-        contextEnricherEntrada_BebidasC.add(sCorrelationIdSetterContextEnricher_1_BebidasC);
-        contextEnricherEntrada_BebidasC.add(sCorrelationIdSetterContextEnricher_2_BebidasC);
+        contextEnricherEntrada_BebidasC.add(sCorrelationIdSetterContextEnricher_1_BebidasC); // del CorrelationIdSetter
+        contextEnricherEntrada_BebidasC.add(sPuertoSolicitudCorrelator_BebidasC);            // respuesta BD
+
         ArrayList<Slot> contextEnricherSalida_BebidasC = new ArrayList<>();
         contextEnricherSalida_BebidasC.add(sContextEnricherMerger_BebidasC);
-        ContextEnricher contextEnricherBebidasC = new ContextEnricher(contextEnricherEntrada_BebidasC, contextEnricherSalida_BebidasC);
+        ContextEnricher contextEnricherBebidasC =
+                new ContextEnricher(contextEnricherEntrada_BebidasC, contextEnricherSalida_BebidasC);
 
         // Merger: sContextEnricherMerger_BebidasF + sContextEnricherMerger_BebidasC -> sMergerAggregator
         ArrayList<Slot> mergerEntrada = new ArrayList<>();
@@ -172,7 +180,7 @@ public class AppCorrelationIdSetter {
         aggregatorSalida.add(sAggregatorPuertoSalida);
         Aggregator aggregator = new Aggregator(aggregatorEntrada, aggregatorSalida, "cafe_order");
 
-        // Realizamos la Secuencia de ejecucion del Programa
+        // Secuencia de ejecución
         conectorEntrada.ejecutar();
         splitter.ejecutar();
         distributor.ejecutar();

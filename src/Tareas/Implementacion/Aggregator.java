@@ -21,12 +21,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * Entradas: 1; Salidas: 1
- * Agrupa los Mensajes previamente divididos por el Splitter en base al idCorrelacion de cada Mensaje
- * Recupera el Mensaje original del Almacen para recomponer la estructura del Mensaje dividido
- * Solo agrega al mensaje final los fragmentos cuyo elemento raíz sea el tipo de lista principal (p.ej. <drink>)
- */
+
 public class Aggregator extends Tarea {
 
     private String etiquetaRaiz;
@@ -56,23 +51,19 @@ public class Aggregator extends Tarea {
                 UUID idCorrelacion = fragmento.getIdCorrelacion();
 
                 if (idCorrelacion == null) {
-                    Logger.getLogger(Aggregator.class.getName()).log(Level.WARNING,
-                            "Aggregator: Fragmento sin idCorrelacion, se ignora");
+                    Logger.getLogger(Aggregator.class.getName()).log(Level.WARNING, "Aggregator: Fragmento sin idCorrelacion, se ignora");
                     continue;
                 }
 
                 procesarFragmento(idCorrelacion, fragmento);
 
             } catch (Exception ex) {
-                Logger.getLogger(Aggregator.class.getName()).log(Level.SEVERE,
-                        "Aggregator: Error procesando fragmento", ex);
+                Logger.getLogger(Aggregator.class.getName()).log(Level.SEVERE, "Aggregator: Error procesando fragmento", ex);
             }
         }
     }
 
-    /**
-     * Procesa un fragmento individual y, en caso de tener todos, reconstruye el mensaje completo.
-     */
+    
     private void procesarFragmento(UUID idCorrelacion, Mensaje fragmento)
             throws ParserConfigurationException {
 
@@ -95,14 +86,12 @@ public class Aggregator extends Tarea {
             // Reconstruimos el Mensaje completo usando el Almacen
             Mensaje mensajeReconstruido = reconstruirMensaje(idCorrelacion, listaFragmentos);
             listaSalidas.get(0).escribirSlot(mensajeReconstruido);
-            
+
             mapaFragmentos.remove(idCorrelacion); // Limpiamos la Cabecera del Mensaje con el 'idCorrelacion' introducido
         }
     }
 
-    /**
-     * Busca en el árbol del mensaje original el nodo contenedor de la lista (p.ej. <drinks>) que contiene los elementos fragmentados
-     */
+    
     private Node buscarContenedorLista(Element raizOriginal, String nombreElementoFragmento) {
         NodeList hijos = raizOriginal.getChildNodes();
         for (int i = 0; i < hijos.getLength(); i++) {
@@ -133,9 +122,7 @@ public class Aggregator extends Tarea {
         return false;
     }
 
-    /**
-     * Determina cuál es el nombre del elemento de lista principal (el más frecuente entre los fragmentos) -> p.ej "drink".
-     */
+    
     private String obtenerNombreElementoLista(List<Mensaje> fragmentos) {
         Map<String, Integer> contador = new HashMap<>();
 
@@ -161,9 +148,7 @@ public class Aggregator extends Tarea {
         return etiquetaMasFrecuente;
     }
 
-    /**
-     * Reconstruye el mensaje original a partir de los fragmentos y la información guardada en el Almacen
-     */
+  
     private Mensaje reconstruirMensaje(UUID idCorrelacion, List<Mensaje> fragmentos)
             throws ParserConfigurationException {
 
@@ -176,7 +161,7 @@ public class Aggregator extends Tarea {
             // Si NO se puede detectar, ponemos un valor por defecto
             nombreElementoFragmento = "drink";
         }
-        
+
         // Recuperamos el Mensaje original del Almacen
         Almacen almacen = Almacen.getInstancia();
         Mensaje mensajeOriginal = null;
@@ -186,8 +171,7 @@ public class Aggregator extends Tarea {
                 mensajeOriginal = originales.get(0);
             }
         } catch (Exception e) {
-            Logger.getLogger(Aggregator.class.getName()).log(Level.WARNING,
-                    "Aggregator: No se pudo recuperar el mensaje original del Almacen para " + idCorrelacion, e);
+            Logger.getLogger(Aggregator.class.getName()).log(Level.WARNING, "Aggregator: No se pudo recuperar el mensaje original del Almacen para " + idCorrelacion, e);
         }
 
         // Creamos el documento raíz para el mensaje reconstruido
@@ -197,6 +181,7 @@ public class Aggregator extends Tarea {
                 .newDocument();
 
         Element raiz;
+        Element nodoContenedor = null;
 
         if (mensajeOriginal != null && mensajeOriginal.getCuerpo() != null) {
             // Usamos la estructura del mensaje original como base
@@ -220,18 +205,24 @@ public class Aggregator extends Tarea {
                 if (hijo.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
-                if (hijo == contenedorLista) {
+                if (contenedorLista != null && hijo.getNodeName().equals(contenedorLista.getNodeName())) {
+                    nodoContenedor = docReconstruido.createElement(hijo.getNodeName()); // Crea <drinks>
+                    raiz.appendChild(nodoContenedor);                                   // Lo pega a <cafe_order>
                     continue;
                 }
                 Node importado = docReconstruido.importNode(hijo, true);
-                raiz.appendChild(importado);
+                raiz.appendChild(importado); //CAMBIOS
             }
 
         } else {
             raiz = docReconstruido.createElement(etiquetaRaiz);
             docReconstruido.appendChild(raiz);
         }
-        
+
+        if (nodoContenedor == null) {
+            nodoContenedor = raiz;
+        }
+
         // Combinamos solo los fragmentos que sean del tipo de lista
         for (Mensaje fragmento : fragmentos) {
             Document cuerpoFragmento = fragmento.getCuerpo();
@@ -244,16 +235,15 @@ public class Aggregator extends Tarea {
             // Filtramos los que NO sean del tipo de lista (p.ej. <resultados>)
             if (!tag.equals(nombreElementoFragmento)) {
                 Logger.getLogger(Aggregator.class.getName()).log(
-                        Level.INFO,
-                        "Aggregator: Ignorando fragmento con raíz <" + tag + "> para correlacion " + idCorrelacion
+                        Level.INFO, "Aggregator: Ignorando fragmento con raíz <" + tag + "> para correlacion " + idCorrelacion
                 );
                 continue;
             }
 
             Node nodoImportado = docReconstruido.importNode(cuerpoFragmento.getDocumentElement(), true);
-            raiz.appendChild(nodoImportado);
+            nodoContenedor.appendChild(nodoImportado);
         }
-        
+
         // Creamos el mensaje reconstruido
         Mensaje mensajeReconstruido = new Mensaje(docReconstruido);
 
@@ -273,3 +263,4 @@ public class Aggregator extends Tarea {
         return mensajeReconstruido;
     }
 }
+

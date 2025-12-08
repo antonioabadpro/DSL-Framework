@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cafe_order>
+    <order_id>3</order_id>
     <drink>
                     
-        <name>cafe</name>
+        <name>te</name>
                     
         <type>hot</type>
                 
         <stock>true</stock>
+    </drink>
+    <drink>
+                    
+        <name>tonica</name>
+                    
+        <type>cold</type>
+                
+        <stock>false</stock>
     </drink>
     <drink>
                     

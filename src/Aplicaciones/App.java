@@ -41,7 +41,7 @@ public class App {
         Slot sCorrelatorContextEnricher_2_BebidasC = new Slot();
         Slot sContextEnricherMerger_BebidasF = new Slot();
         Slot sContextEnricherMerger_BebidasC = new Slot();
-        Slot sMergerAgregator = new Slot();
+        Slot sMergerAggregator = new Slot();
         Slot sAggregatorPuertoSalida = new Slot();
 
         // Creamos los Puertos necesarios para el problema de Cafe
@@ -51,13 +51,14 @@ public class App {
         PuertoSalida puertoSalida = new PuertoSalida(sAggregatorPuertoSalida);
 
         // Creamos los Conectores necesarios para el problema de Cafe
-        System.out.println("Escribe el nombre de la comanda que quieres procesar: (sin .xml)");
+        System.out.print("Escribe el nombre de la comanda que quieres procesar: (sin .xml): ");
         Scanner sc = new Scanner(System.in);
         String comanda = sc.nextLine();
         ConectorEntrada conectorEntrada = new ConectorEntrada(puertoEntrada, "src/Comandas/" + comanda + ".xml"); // Ruta Relativa al DIR de ejecucion del Programa
 
-        String urlPostgres = "jdbc:postgresql://aws-1-eu-north-1.pooler.supabase.com:5432/postgres?user=postgres.wttznbvrlqmioczuafnx&password=bdiia202512345";
-
+        String urlPostgres = "jdbc:postgresql://aws-1-eu-north-1.pooler.supabase.com:6543/postgres?user=postgres.wttznbvrlqmioczuafnx&password=bdiia202512345";
+        //String urlPostgres = "jdbc:postgresql://aws-1-eu-west-2.pooler.supabase.com:5432/postgres?user=postgres.crxuouagexoeqenpzali&password=Supabase-21052002";
+        
         // Test de conexión simple
         try (Connection con = DriverManager.getConnection(urlPostgres)) {
             System.out.println("CONEXIÓN OK con Supabase");
@@ -162,12 +163,12 @@ public class App {
         mergerEntrada.add(sContextEnricherMerger_BebidasF);
         mergerEntrada.add(sContextEnricherMerger_BebidasC);
         ArrayList<Slot> mergerSalida = new ArrayList<>();
-        mergerSalida.add(sMergerAgregator);
+        mergerSalida.add(sMergerAggregator);
         Merger merger = new Merger(mergerEntrada, mergerSalida);
 
         // Aggregator: sMergerAggregator -> sAggregatorPuertoSalida
         ArrayList<Slot> aggregatorEntrada = new ArrayList<>();
-        aggregatorEntrada.add(sMergerAgregator);
+        aggregatorEntrada.add(sMergerAggregator);
         ArrayList<Slot> aggregatorSalida = new ArrayList<>();
         aggregatorSalida.add(sAggregatorPuertoSalida);
         Aggregator aggregator = new Aggregator(aggregatorEntrada, aggregatorSalida, "cafe_order");
