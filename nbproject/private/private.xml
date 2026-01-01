@@ -3,24 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Aggregator.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Aplicaciones/AppCorrelationIdSetter.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Conectores/ConectorSalida.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Merger.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Correlator.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Tarea.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Aplicaciones/App.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Translator.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/CorrelationIdSetter.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Slots/Slot.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/ContextEnricher.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Distributor.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Conectores/ConectorEntrada.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Conectores/Conector.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Replicator.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Conectores/ConectorBD.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Tareas/Implementacion/Splitter.java</file>
-            <file>file:/C:/Users/Jaime/OneDrive/4º/Primer%20cuatri/Integración/DSL-Framework/src/Mensajes/Almacen.java</file>
+            <file>file:/C:/Users/Antonio%20Abad/Desktop/Programación/IIA/DSL_Framework/src/Aplicaciones/App.java</file>
+            <file>file:/C:/Users/Antonio%20Abad/Desktop/Programación/IIA/DSL_Framework/src/Aplicaciones/AppCorrelationIdSetter.java</file>
         </group>
     </open-files>
 </project-private>

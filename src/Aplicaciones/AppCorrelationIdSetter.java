@@ -4,16 +4,24 @@ import Conectores.*;
 import Puertos.*;
 import Slots.Slot;
 import Tareas.Implementacion.*;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppCorrelationIdSetter {
 
     public static void main(String[] args) throws SQLException {
-
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8")); // Consola con caracteres UTF-8
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // Cargamos el Driver de PostgreSQL (BD)
         try {
             Class.forName("org.postgresql.Driver");
