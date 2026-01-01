@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cafe_order>
-    <order_id>6</order_id>
+    <order_id>3</order_id>
     <drinks>
         <drink>
                         
@@ -12,9 +12,9 @@
         </drink>
         <drink>
                         
-            <name>tila</name>
+            <name>tonica</name>
                         
-            <type>hot</type>
+            <type>cold</type>
                     
             <stock>false</stock>
         </drink>
@@ -25,22 +25,6 @@
             <type>cold</type>
                     
             <stock>true</stock>
-        </drink>
-        <drink>
-                        
-            <name>guarana</name>
-                        
-            <type>cold</type>
-                    
-            <stock>false</stock>
-        </drink>
-        <drink>
-                        
-            <name>cerveza</name>
-                        
-            <type>cold</type>
-                    
-            <stock>false</stock>
         </drink>
     </drinks>
 </cafe_order>

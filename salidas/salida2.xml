@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cafe_order>
-    <order_id>6</order_id>
+    <order_id>2</order_id>
     <drinks>
         <drink>
                         
-            <name>te</name>
+            <name>cafe</name>
                         
             <type>hot</type>
                     
@@ -12,11 +12,11 @@
         </drink>
         <drink>
                         
-            <name>tila</name>
+            <name>chocolate</name>
                         
             <type>hot</type>
                     
-            <stock>false</stock>
+            <stock>true</stock>
         </drink>
         <drink>
                         
@@ -25,22 +25,6 @@
             <type>cold</type>
                     
             <stock>true</stock>
-        </drink>
-        <drink>
-                        
-            <name>guarana</name>
-                        
-            <type>cold</type>
-                    
-            <stock>false</stock>
-        </drink>
-        <drink>
-                        
-            <name>cerveza</name>
-                        
-            <type>cold</type>
-                    
-            <stock>false</stock>
         </drink>
     </drinks>
 </cafe_order>
