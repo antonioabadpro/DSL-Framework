@@ -1,10 +1,12 @@
 # DSL Framework - Guaraná Implementation ☕
 
-![Java](https://img.shields.io/badge/Language-Java-orange) ![Architecture](https://img.shields.io/badge/Architecture-Pipes%20%26%20Filters-blue) ![Status](https://img.shields.io/badge/Status-Completed-success)
+![Java](https://img.shields.io/badge/Java-JDK%2021-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![IDE](https://img.shields.io/badge/IDE-NetBeans%2022-1B6AC6?style=for-the-badge&logo=apache-netbeans-ide&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
 Implementación de un Framework de Integración basado en el DSL **Guaraná** y los patrones de integración empresarial (EIP), desarrollado para la asignatura de **Integración de la Información y Aplicaciones (IIA)** de la Universidad de Huelva.
 
-Este proyecto resuelve el problema de integración "CAFÉ", orquestando el flujo de pedidos desde archivos XML hasta su persistencia en base de datos y recomposición final.
+Este proyecto resuelve el problema de integración "CAFÉ", gestionando el flujo de pedidos desde archivos XML hasta su persistencia en base de datos y recomposición final.
 
 ## 🚀 Características Principales
 
@@ -82,14 +84,32 @@ El flujo implementado sigue la siguiente lógica de negocio:
 
 ---
 
-## 👥 Equipo de Desarrollo
+## 👥 Autores
 
-Proyecto realizado por:
+Equipo de Desarrollo:
 
 * **Jaime Abad Quirós**
 * **Antonio Abad Hernández Gálvez**
 * **Agustín Rodríguez Aguilar**
 * **Sergio Núñez Sierra**
 
+GitHub: [@antonioabadpro](https://github.com/antonioabadpro) <br>
+*Proyecto realizado para la Universidad de Huelva (UHU)*
+
 ---
-*Universidad de Huelva - Grado en Ingeniería Informática - Curso 2025/2026*
+
+## ©️​ Licencia y Derechos de Autor
+
+**© 2025. Antonio Abad Hernández Gálvez**. <br>
+Todos los derechos reservados.
+
+Este proyecto es propiedad intelectual de su autor. <br>
+El código se proporciona únicamente con fines de **consulta y demostración de portfolio**.
+
+El código fuente de este proyecto es propiedad exclusiva de su autor. 
+Se permite su visualización con fines educativos y de evaluación académica.
+
+⛔ **Prohibido su uso:** Queda estrictamente prohibida su reproducción total o parcial, modificación, distribución o uso para fines comerciales o académicos por parte de terceros sin la autorización expresa y por escrito del autor.
+
+Este proyecto es el resultado de una evaluación académica para la Universidad de Huelva. <br>
+El plagio o uso indebido de este código en otros proyectos académicos será reportado.
